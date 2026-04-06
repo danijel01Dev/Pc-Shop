@@ -3,6 +3,10 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import  { PaginationDto} from './dto/paginationDto'
+
+
+// ==== Whole service is covered by Admin guard in controller  except findAll and  findOne===
+
 @Injectable()
 export class ProductsService {
   constructor(private db : PrismaService){}
@@ -50,7 +54,8 @@ export class ProductsService {
   }
 
   async findOne(id: number) {
-   return  await this.db.product.findUnique({where : {id}})
+   return  await this.db.product.findUnique({where : {id},
+  })
   }
 
    async update(id: number, updateProductDto: UpdateProductDto) {

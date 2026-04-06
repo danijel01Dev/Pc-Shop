@@ -3,10 +3,15 @@ import { BadRequestException, ConflictException, Injectable, Req, UnauthorizedEx
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrderDto } from './dto/createorderDto';
+import { PaginationDto } from 'src/products/dto/paginationDto';
 
 @Injectable()
 export class OrdersService {
   constructor( private db: PrismaService){}
+  
+  
+  //==== Create Order  >  order created in transaction  ====
+  
   async create(userId : number ,dto : CreateOrderDto) {
    return await this.db.$transaction((async (tx) => {
        
@@ -78,20 +83,133 @@ export class OrdersService {
 
    }))
   }
+   // === Get orders  >excluded 'DELIVERED' ===
+  async findAll(pagDto : PaginationDto) {
+      try{ const page = Number(pagDto.page) | 1 ;
+           const limit = Number(pagDto.limit) | 10;
+           const skipOrder = Math.max((page - 1 ) * limit, 0)
 
-  findAll() {
-    return `This action returns all orders`;
+           const orders = await this.db.order.findMany({
+            where : {
+              status : { not: 'DELIVERED'}
+            },
+            skip : skipOrder,
+            take : limit ,
+            orderBy: {createdAt : 'desc'}
+           })
+           const total = await this.db.order.count({where : {
+            status : {not : 'DELIVERED'}
+           }})
+   return {orders,
+    total,
+    page,
+    limit,
+    totalPages : Math.ceil(total/limit) || 1
+   }
+
+      }
+     
+      catch(error){
+       console.log('failed to load orders', error);
+       throw new UnauthorizedException('failed to load all orders ')
+      }
+    }
+      // === Get Orders >  Only 'DELIVERED'
+      async findDelivered(pagDto : PaginationDto){
+         const page = Number(pagDto.page) | 1;
+           const limit = Number(pagDto.limit) | 10;
+           const skipOrder = Math.max((page - 1 ) * limit, 0);
+           const sort = pagDto.order === 'asc' ? 'asc' : 'desc' ;
+           const total = await this.db.order.count({where : {status : 'DELIVERED'}});
+           const orders = await this.db.order.findMany({
+            where : {
+              status : 'DELIVERED',
+           },
+          skip: skipOrder,
+           take : limit ,
+          orderBy : {createdAt : sort}})
+          return {
+            orders,
+            total,
+            page,
+            limit,
+            totalPages : Math.ceil(total/limit) || 1
+          };
+      }
+    
+  
+      
+  
+   // ==== Find One Order > response : order  and items included  ====
+  async findOne(userId : number , id: number) {
+       try{
+        const findOrder = await this.db.order.findUnique({where : {id},
+        include: {items : true,}})
+        if(!findOrder){ throw new UnauthorizedException('invalid order Id')};
+        if(userId !== findOrder.userId){throw new UnauthorizedException('invalid user , access denied ')};
+        return findOrder;
+       }
+       catch(error){
+        console.log('failed to get order',error)
+        throw new UnauthorizedException('failed to get order , try again !')
+
+       }
+  }
+// ==== Admin order update >  Status update   ====
+  async adminOrderUpdate(id: number, updateOrderDto: UpdateOrderDto) {
+    try{  if(updateOrderDto.status === 'CANCELLED'){throw new BadRequestException(' unable to cancel , Use cancelOrder route !')}
+       const  findOrder = await this.db.order.findUnique({where : {id}})
+       if(!findOrder){throw new UnauthorizedException('invalid order')}
+       const  updateStatus =   this.db.order.update({where : { id : findOrder.id},
+      data : {
+        status : updateOrderDto.status,
+      }})
+      return updateStatus;
+    }
+    catch(error){console.log('failed to update status',error)
+      throw new UnauthorizedException('failed to update Order Status')
+    }
+  }
+//==== Cancel order by user > stock restore and status change to 'CANCELLED' ====
+  async  cancelOrder (userId : number ,   id: number) {
+   try{ return await this.db.$transaction(async (tx) => {
+           const order = await tx.order.findUnique({where : {id},
+          include : {items : true},})
+      if(!order){ throw new UnauthorizedException('Order doenst exist ')};
+      if(userId !== order.userId) { throw new UnauthorizedException('access denied ')}
+      if(order.status !== 'PENDING') {throw new UnauthorizedException(' Failed to remove Order , Order is processed already')}
+       for(const item of order.items){
+        await tx.product.update({where : {id : item.productId},
+          data : {
+            stock : {increment : item.quantity}}})}
+       return  await tx.order.update({where : { id : order.id},
+         data : {
+           status : 'CANCELLED' , }})} )}
+   catch(error){
+    console.log('failed to delete order' , error)
+    throw new UnauthorizedException('Failed to delete order ')
+   }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
-  }
-
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  // ==== Admin Cancel Order > canceling order and stock restore =====
+  async adminCancelOrder( id : number) {
+  try{ 
+   return await this.db.$transaction(async (tx)=> {
+const orderCheck = await tx.order.findUnique({where : {id},
+    include : {
+    items : true ,}})
+     if(!orderCheck){ throw new UnauthorizedException('invalid order id ')};
+     if(orderCheck.status === 'DELIVERED' || orderCheck.status === 'CANCELLED' ){  throw new UnauthorizedException('this order is delivered or cancelled  ')}
+     
+      for(const item of orderCheck.items){
+      await tx.product.update({where : {id : item.productId},
+      data : { stock : {increment : item.quantity}, }})}
+     return await tx.order.update({where : {id : orderCheck.id},data : {
+      status : 'CANCELLED' ,}})} )}
+  catch(error){
+    console.log('failed to update order status ', error)
+    throw new UnauthorizedException(' failed to update order status , try again !')
   }
 }
+}
+

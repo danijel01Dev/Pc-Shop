@@ -1,16 +1,17 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-
+import { UpdateRoleDto } from './dto/updateAdmin.Dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
   constructor(private db : PrismaService
   ){}
  async  createUser(createUserDto: CreateUserDto) {
-     try{
-       return await this.db.user.create({data : {email : createUserDto.email , password : createUserDto.password , refreshToken : createUserDto.refreshToken}})
+     try{ const hash = await bcrypt.hash(createUserDto.password, 10)
+       return await this.db.user.create({data : {email : createUserDto.email , password : hash , refreshToken : createUserDto.refreshToken}})
      }     
      catch(error){
       console.log(' failed to create user', error)
@@ -63,8 +64,13 @@ throw new NotFoundException('invalid user')
   
 }}
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-  try{  return await this.db.user.update({where : {id},
+  async update(userId : number , id: number, updateUserDto: UpdateUserDto) {
+  try{  const findUser = await this.db.user.findUnique({where : {id}});
+     if(!findUser){throw new UnauthorizedException('invalid user , failed to update')}
+     if( findUser.id !== userId ) {throw new UnauthorizedException('access denied ')}
+    
+    
+    return await this.db.user.update({where : {id : findUser.id},
     data : {
         email : updateUserDto.email,
         password : updateUserDto.password
@@ -72,7 +78,7 @@ throw new NotFoundException('invalid user')
   }
  catch(error){
   console.log('failed to update user')
-  throw new NotFoundException('something went wrong , failed to update user')
+  throw new UnauthorizedException('something went wrong , failed to update user')
 
  }}
 
@@ -83,4 +89,19 @@ catch(error){
   console.log('failed to delete user', error)
   throw new NotFoundException('failed to delete user ')
 }}
+    async userUpdateByAdmin (dto : UpdateRoleDto){
+      try{const findUser = await this.db.user.findUnique({where : {email : dto.email }});
+          if(!findUser){ throw new UnauthorizedException('invalid user ')};
+         return await  this.db.user.update({where : {id : findUser.id},
+          data : {
+            role : dto.role,
+          }})
+          }
+      catch(error){
+        console.log('failed to update user by Admin ', error)
+        throw new UnauthorizedException(' failed to update user By Admin')
+      }
+
+
+    }
 }
