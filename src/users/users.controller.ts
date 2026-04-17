@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, ParseIntPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -26,21 +26,21 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Roles('ADMIN')
   @Get(':id')
-  findOne(@Req() req , @Param('id') id: string) {
+  findOne(@Req() req , @Param('id', ParseIntPipe) id: number) {
    
-    return this.usersService.findOne( +id);
+    return this.usersService.findOne( id);
   }
 
   @Patch(':id')
-  update(@Req() req , @Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  update(@Req() req , @Param('id', ParseIntPipe) id: number, @Body() updateUserDto: UpdateUserDto) {
     const userId = req.user.id
-    return this.usersService.update(userId , +id, updateUserDto);
+    return this.usersService.update(userId , id, updateUserDto);
   }
 @UseGuards(RolesGuard)
 @Roles('ADMIN')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.usersService.remove(id);
   }
   
    @UseGuards(RolesGuard)

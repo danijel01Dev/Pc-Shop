@@ -3,7 +3,7 @@ import { BadRequestException, ConflictException, Injectable, Req, UnauthorizedEx
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOrderDto } from './dto/createorderDto';
-import { PaginationDto } from 'src/products/dto/paginationDto';
+import { PaginationDto } from 'src/products/dto/pagination.Dto';
 
 @Injectable()
 export class OrdersService {
