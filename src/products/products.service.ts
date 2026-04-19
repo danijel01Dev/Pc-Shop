@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import  { PaginationDto} from './dto/pagination.Dto'
 
 
@@ -18,7 +18,7 @@ export class ProductsService {
     }})
   }
 
-  async findAll(pagDto : PaginationDto) {
+  async findAll( pagDto: PaginationDto) {
     const page = Number(pagDto.page) || 1;
     const limit  = Number(pagDto.limit) || 10;
      const skip = (page  -1 ) * limit ;

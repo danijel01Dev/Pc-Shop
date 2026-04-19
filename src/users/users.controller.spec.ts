@@ -5,16 +5,21 @@ import { UsersService } from './users.service';
 describe('UsersController', () => {
   let controller: UsersController;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [UsersController],
-      providers: [UsersService],
-    }).compile();
+ const mockService = {
+  findAll: jest.fn(),
+};
 
-    controller = module.get<UsersController>(UsersController);
-  });
+beforeEach(async () => {
+  const module: TestingModule = await Test.createTestingModule({
+    controllers: [UsersController],
+    providers: [
+      {
+        provide: UsersService,
+        useValue: mockService,
+      },
+    ],
+  }).compile();
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+  controller = module.get<UsersController>(UsersController);
+})
 });

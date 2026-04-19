@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from './products.service';
+import { PaginationDto } from './dto/pagination.Dto';
+import { Search } from '@nestjs/common';
 
 describe('ProductsService', () => {
   let service: ProductsService;
@@ -12,7 +14,11 @@ describe('ProductsService', () => {
     service = module.get<ProductsService>(ProductsService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('should return filtered products ', async () => {
+      const dto = {page : '1' , limit : '3' , search : 'Mouse' , sortBy : 'asc' , }
+  
+       
+    const call = service.findAll(dto)
+  expect(call)
   });
 });

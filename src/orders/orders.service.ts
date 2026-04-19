@@ -1,9 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, Req, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException, Req, UnauthorizedException } from '@nestjs/common';
 
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/createorderDto';
-import { PaginationDto } from 'src/products/dto/pagination.Dto';
+import { PaginationDto } from '../products/dto/pagination.Dto';
 
 @Injectable()
 export class OrdersService {
@@ -145,13 +145,13 @@ export class OrdersService {
        try{
         const findOrder = await this.db.order.findUnique({where : {id},
         include: {items : true,}})
-        if(!findOrder){ throw new UnauthorizedException('invalid order Id')};
-        if(userId !== findOrder.userId){throw new UnauthorizedException('invalid user , access denied ')};
+        if(!findOrder){ throw new  NotFoundException('invalid order Id')};
+        if(userId !== findOrder.userId){throw new ForbiddenException('invalid user , access denied ')};
         return findOrder;
        }
        catch(error){
         console.log('failed to get order',error)
-        throw new UnauthorizedException('failed to get order , try again !')
+        throw error
 
        }
   }
@@ -167,7 +167,7 @@ export class OrdersService {
       return updateStatus;
     }
     catch(error){console.log('failed to update status',error)
-      throw new UnauthorizedException('failed to update Order Status')
+      throw new error
     }
   }
 //==== Cancel order by user > stock restore and status change to 'CANCELLED' ====
@@ -187,7 +187,7 @@ export class OrdersService {
            status : 'CANCELLED' , }})} )}
    catch(error){
     console.log('failed to delete order' , error)
-    throw new UnauthorizedException('Failed to delete order ')
+    throw new error
    }
   }
 

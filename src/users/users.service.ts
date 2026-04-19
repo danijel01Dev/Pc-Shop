@@ -1,7 +1,7 @@
 import { HttpException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { UpdateRoleDto } from './dto/updateAdmin.Dto';
 import * as bcrypt from 'bcrypt';
 
@@ -78,7 +78,7 @@ throw new NotFoundException('invalid user')
   }
  catch(error){
   console.log('failed to update user')
-  throw new UnauthorizedException('something went wrong , failed to update user')
+  throw new error
 
  }}
 
