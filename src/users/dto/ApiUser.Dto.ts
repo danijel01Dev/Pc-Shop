@@ -9,9 +9,6 @@ export class UserResponseDto {
 
   @ApiProperty({ example: 'USER' })
   role: string;
-
-  @ApiProperty({ example: '2026-01-01T12:00:00Z' })
-  createdAt: Date;
 }
 
 export class UserEmailDto {
@@ -19,6 +16,6 @@ export class UserEmailDto {
   email: string;
 }
 export class UserRoleDto {
-    @ApiProperty({ example : 'ADMIN'})
-    role : string;
+  @ApiProperty({ example: 'ADMIN' })
+  role: string;
 }

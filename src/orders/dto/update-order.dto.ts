@@ -5,7 +5,7 @@ import { OrderStatus } from '@prisma/client';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateOrderDto extends PartialType(CreateOrderDto) {
-    @ApiProperty({example : 'PENDING' , description : 'Order Status Update'})
-    @IsEnum(OrderStatus)
-     status : OrderStatus ;
+  @ApiProperty({ example: 'PENDING', description: 'Order Status Update' })
+  @IsEnum(OrderStatus)
+  status: OrderStatus;
 }

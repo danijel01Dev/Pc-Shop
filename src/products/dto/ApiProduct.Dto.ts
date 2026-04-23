@@ -12,16 +12,13 @@ export class ProductResponseDto {
 
   @ApiProperty({ example: 5 })
   stock: number;
-    
-  @ApiProperty({example : 'blue color and durable case'})
-  description? : string;
+
+  @ApiProperty({ example: 'blue color and durable case' })
+  description?: string;
 
   @ApiProperty({ example: '2026-01-01T12:00:00Z' })
   createdAt: Date;
 }
-
-
-
 
 export class PaginatedProductsDto {
   @ApiProperty({ type: [ProductResponseDto] })
@@ -36,5 +33,3 @@ export class PaginatedProductsDto {
   @ApiProperty({ example: 10 })
   limit: number;
 }
-
-

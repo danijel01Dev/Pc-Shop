@@ -9,18 +9,18 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class RemovePasswordInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
-    return next.handle().pipe(
-      map((data) => this.removePassword(data)),
-    );
+    return next.handle().pipe(map((data) => this.removePassword(data)));
   }
 
   private removePassword(data: any): any {
-   
     if (Array.isArray(data)) {
       return data.map((item) => this.removePassword(item));
     }
 
-  
+    if (data instanceof Date) {
+      return data;
+    }
+
     if (data && typeof data === 'object') {
       const result: any = {};
 
