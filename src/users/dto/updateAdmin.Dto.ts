@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum } from 'class-validator';
-import { Role } from '@prisma/client';
+import { Role } from 'generated/prisma/enums';
 
 export class UpdateRoleDto {
   @ApiProperty({
