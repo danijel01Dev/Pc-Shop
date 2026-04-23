@@ -6,11 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-<<<<<<< HEAD
-    "build": "nest build --debug 2>&1 && echo 'Build complete' && ls -la dist/",
-=======
-    "build": "prisma generate && nest build",
->>>>>>> 75fa9fa (fix prisma version)
+    "build": "prisma generate && nest build 2>&1 && echo 'Build complete' && ls -la dist/",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
