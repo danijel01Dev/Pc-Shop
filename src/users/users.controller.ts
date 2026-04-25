@@ -16,10 +16,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt/JWT-Guards/jwt.guard';
 import { RolesGuard } from '../auth/jwt/JWT-Guards/role.guard';
 import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
-import { UpdateRoleDto } from './dto/updateAdmin.Dto';
-import { UserResponseDto, UserEmailDto, UserRoleDto } from './dto/ApiUser.Dto';
+import { UpdateRoleDto } from './dto/update-admin.dto';
+import { UserResponseDto, UserEmailDto, UserRoleDto } from './dto/api-user.dto';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ApiErrorResponses } from 'src/Error Decorator/ErrorDecoratorSwagger';
+import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {

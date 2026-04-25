@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderStatus } from '@prisma/client';
-import { OrderItemDto } from './orderitem.dto';
+import { OrderItemDto } from './order-item.dto';
 import { IsArray, IsDateString, IsEnum, IsNumber } from 'class-validator';
 
 export class OrderResponseDto {

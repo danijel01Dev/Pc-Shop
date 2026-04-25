@@ -3,8 +3,8 @@ import { Controller, Post, Body, Req, UseGuards, Delete } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtRefreshGuard } from './jwt/JWT-Guards/jwt.guard.refreshToken';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AuthResponseDto } from './AuthDTO/auth.Response.Dto';
-import { ApiErrorResponses } from 'src/Error Decorator/ErrorDecoratorSwagger';
+import { AuthResponseDto } from './AuthDTO/auth-response.dto';
+import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './AuthDTO/login.dto';
 

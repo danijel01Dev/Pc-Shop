@@ -12,15 +12,15 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto } from './dto/createorderDto';
+import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { PaginationDto } from '../products/dto/pagination.Dto';
+import { PaginationDto } from '../products/dto/pagination.dto';
 import { JwtAuthGuard } from '../auth/jwt/JWT-Guards/jwt.guard';
 import { RolesGuard } from '../auth/jwt/JWT-Guards/role.guard';
 import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { OrderResponseDto, PagResponseDto } from './dto/ApiOrder.Dto';
-import { ApiErrorResponses } from 'src/Error Decorator/ErrorDecoratorSwagger';
+ import { OrderResponseDto, PagResponseDto } from './dto/api-order.dto';
+import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
 
 @Controller('orders')
 export class OrdersController {

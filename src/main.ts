@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { RemovePasswordInterceptor } from './interceptor/data.interceptor';
-import { GlobalExceptionFilter } from './GlobalFilter/global.filter';
+import { GlobalExceptionFilter } from './global-filter/global.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {

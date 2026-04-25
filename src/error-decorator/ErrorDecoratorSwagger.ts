@@ -5,7 +5,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiForbiddenResponse,
 } from '@nestjs/swagger';
-import { ErrorResponseDto } from 'src/Global Response Dto/GlobalResponse.Dto';
+import { ErrorResponseDto } from '../global-response-dto/global-response.dto';
 
 export function ApiErrorResponses() {
   return applyDecorators(

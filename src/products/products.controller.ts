@@ -13,14 +13,14 @@ import {
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PaginationDto } from './dto/pagination.Dto';
+import { PaginationDto } from './dto/pagination.dto';
 import { JwtAuthGuard } from '../auth/jwt/JWT-Guards/jwt.guard';
 import { RolesGuard } from '../auth/jwt/JWT-Guards/role.guard';
 import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ProductResponseDto } from './dto/ApiProduct.Dto';
-import { PaginatedProductsDto } from './dto/ApiProduct.Dto';
-import { ApiErrorResponses } from 'src/Error Decorator/ErrorDecoratorSwagger';
+import { ProductResponseDto } from './dto/api-product.dto';
+import { PaginatedProductsDto } from './dto/api-product.dto';
+import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
 
 @Controller('products')
 export class ProductsController {
