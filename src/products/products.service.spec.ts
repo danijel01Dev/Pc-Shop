@@ -21,7 +21,7 @@ describe('ProductsService', () => {
   });
 
   it('should return products ', async () => {
-    const dto = { page: '2', limit: '10' };
+    const dto = { page: 2, limit: 10 };
     prisma.product.findMany.mockResolvedValue([{ id: 1, name: 'Mouse' }]);
 
     const call = await service.findAll(dto);
@@ -30,8 +30,8 @@ describe('ProductsService', () => {
 
   it('should return  filtered products', async () => {
     const dto = {
-      page: '2',
-      limit: '10',
+      page: 2,
+      limit: 10,
       search: 'Mouse',
       sortBy: 'price',
       order: 'asc',

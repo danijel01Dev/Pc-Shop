@@ -126,26 +126,17 @@ export class AuthService {
     }
   }
   //==== Remove token and  Log out User ====
-  async logout(data: any) {
-    try {
-      const user = await this.db.findOne(data.sub);
-      if (!user) {
-        throw new UnauthorizedException('Invalid credentials');
-      }
-      const passCheck = await bcrypt.compare(
-        data.refreshToken,
-        user.refreshToken,
-      );
-      if (!passCheck) {
-        throw new UnauthorizedException('invalid token');
-      }
-      await this.db.updateRefreshToken(user.id, '');
-      return {
-        message: 'logout successful',
-      };
-    } catch (error) {
-      console.log('failed to logout', error);
-      throw new UnauthorizedException('failed to logout');
+  async logout(data: { sub: number; email: string; role: string }) {
+    const user = await this.db.findOne(data.sub);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
     }
+
+    await this.db.updateRefreshToken(user.id, '' as string);
+
+    return {
+      message: 'Logout successful',
+    };
   }
 }

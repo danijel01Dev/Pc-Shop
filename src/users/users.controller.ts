@@ -18,8 +18,10 @@ import { RolesGuard } from '../auth/jwt/JWT-Guards/role.guard';
 import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
 import { UpdateRoleDto } from './dto/update-admin.dto';
 import { UserResponseDto, UserEmailDto, UserRoleDto } from './dto/api-user.dto';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
+
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UsersController {

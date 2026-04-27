@@ -17,7 +17,7 @@ import { PaginationDto } from './dto/pagination.dto';
 import { JwtAuthGuard } from '../auth/jwt/JWT-Guards/jwt.guard';
 import { RolesGuard } from '../auth/jwt/JWT-Guards/role.guard';
 import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/api-product.dto';
 import { PaginatedProductsDto } from './dto/api-product.dto';
 import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
@@ -25,7 +25,7 @@ import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
-
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post()
@@ -59,6 +59,7 @@ export class ProductsController {
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productsService.findOne(id);
   }
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Patch(':id')
@@ -75,6 +76,7 @@ export class ProductsController {
   ) {
     return this.productsService.update(id, updateProductDto);
   }
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Delete(':id')

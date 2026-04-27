@@ -25,7 +25,7 @@ import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'Create Order' })
@@ -39,7 +39,7 @@ export class OrdersController {
     const userId = req.user.sub;
     return this.ordersService.create(userId, createOrderDto);
   }
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('active')
@@ -53,7 +53,7 @@ export class OrdersController {
   findAll(@Query() pagdto: PaginationDto) {
     return this.ordersService.findAll(pagdto);
   }
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Get('delivered')
@@ -67,7 +67,7 @@ export class OrdersController {
   findDelivered(@Query() pagdto: PaginationDto) {
     return this.ordersService.findDelivered(pagdto);
   }
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get Order By Id ' })
@@ -81,7 +81,7 @@ export class OrdersController {
     const userId = req.user.sub;
     return this.ordersService.findOne(userId, id);
   }
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Patch('update/:id')
@@ -94,7 +94,7 @@ export class OrdersController {
   ) {
     return this.ordersService.adminOrderUpdate(id, updateOrderDto);
   }
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Cancel Order ' })
@@ -108,7 +108,7 @@ export class OrdersController {
     const userId = req.user.sub;
     return this.ordersService.cancelOrder(userId, id);
   }
-  @ApiBearerAuth()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Patch('cancel/:id')
