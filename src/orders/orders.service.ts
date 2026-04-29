@@ -12,7 +12,7 @@ import {
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { PaginationDto } from '../products/dto/pagination.dto';
+import { PaginationDto } from 'src/products/dto/pagination.dto';
 
 @Injectable()
 export class OrdersService {
