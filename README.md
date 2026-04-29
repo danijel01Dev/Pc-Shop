@@ -4,7 +4,7 @@ Backend API for a simple e-commerce system built with NestJS.
 The goal of this project was to practice core backend concepts used in real-world applications, including authentication, authorization, and database interaction.
 
 Swagger documentation:
-https://pc-shop-production-5bcb.up.railway.app/api
+https://pc-shop-fmqa.onrender.com/api
 
 ---
 
