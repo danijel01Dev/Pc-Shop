@@ -56,8 +56,8 @@ export class AuthController {
 
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  refresh(@Req() req) {
-    return this.auth.refresh(req.user);
+  refresh(@Req() req, @Body() dto: RefreshDto) {
+    return this.auth.refresh(dto.refreshToken);
   }
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Remove token/access to user' })
