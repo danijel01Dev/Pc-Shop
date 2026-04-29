@@ -23,6 +23,7 @@ export class AuthController {
   register(@Body() dto: CreateUserDto) {
     return this.auth.register(dto);
   }
+  @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'User Log In' })
   @ApiResponse({
     status: 200,
