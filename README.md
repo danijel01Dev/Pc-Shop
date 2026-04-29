@@ -1,109 +1,84 @@
-# 🖥️ PC Shop API
+# PC Shop API
 
-Backend API for a PC shop system built with **NestJS**, **Prisma**, and **PostgreSQL**.
-This project focuses on building a clean and scalable backend with authentication, role-based access control, and real-world API structure.
+Backend API for a simple e-commerce system built with NestJS.
+The goal of this project was to practice core backend concepts used in real-world applications, including authentication, authorization, and database interaction.
 
-> Live API available via Swagger documentation (link below)
-
----
-
-## 🚀 Features
-
-* JWT Authentication (Register / Login)
-* Role-Based Access Control (USER / ADMIN)
-* Product management (CRUD)
-* User management
-* Global error handling
-* Request validation
-* Swagger API documentation
-* Unit testing with Jest
+Swagger documentation:
+https://pc-shop-production-5bcb.up.railway.app/api
 
 ---
 
-## 🛠️ Tech Stack
+## -- Overview --
 
-* NestJS
-* Node.js
-* PostgreSQL
-* Prisma ORM
-* JWT
-* Jest
-* Swagger
-* Railway (deployment)
+This project simulates a basic PC shop backend. It includes user authentication, product management, and order handling. The focus was on writing clean, structured code and handling common backend problems like secure authentication and concurrent requests.
 
 ---
 
-## 📄 API Documentation
+## -- Authentication & Authorization --
 
-👉 https://pc-shop-production-5bcb.up.railway.app/api
+Authentication is implemented using JWT with access and refresh tokens. Refresh tokens are stored hashed in the database and removed on logout.
 
----
-
-## 🔐 Test Credentials
-
-Admin account for testing:
-
-* Email: [admin.guest993@gmail.com](mailto:admin.guest993@gmail.com)
-* Password: userPassword
+Authorization is role-based, with USER and ADMIN roles. Guards are used to protect routes, and a custom decorator is used to simplify role checks.
 
 ---
 
-## 🔄 Authentication Flow
+## -- Products & Orders --
 
-* User registers or logs in
-* Server returns JWT token
-* Token is used to access protected routes
-* Role-based guards restrict admin-only actions
+Products support standard CRUD operations with request validation through DTOs.
+
+Order creation is handled using Prisma transactions to avoid inconsistent state. Before creating an order, the system checks product availability. This helps prevent issues when multiple users try to buy the same product at the same time.
 
 ---
 
-## 📦 Installation
+## -- Structure & Design --
 
-```bash
+The application is organized into modules such as auth, users, products, and orders. Shared logic like exception handling and response formatting is handled through a global filter and interceptor.
+
+The goal was to keep the codebase readable and easy to extend.
+
+---
+
+## -- Tech Stack --
+
+NestJS is used as the main framework, with Prisma as the ORM and PostgreSQL as the database. Authentication is handled with JWT, testing with Jest, and the app is deployed on Railway. Swagger is used for API documentation.
+
+---
+
+## -- Running the project --
+
+```bash id="run22"
 git clone https://github.com/danijel01Dev/Pc-Shop.git
 cd Pc-Shop
 npm install
-```
-
----
-
-## ▶️ Running the app
-
-```bash
 npm run start:dev
 ```
 
 ---
 
-## 🧪 Running tests
+## -- Testing --
 
-```bash
+```bash id="test22"
 npm run test
 ```
 
 ---
 
-## 📁 Project Structure
+## -- Notes --
 
-```
-src/
- ├── auth/
- ├── users/
- ├── products/
- ├── common/
- ├── prisma/
-```
+The project includes basic protection against race conditions during order creation by using database transactions.
+Guards for authentication and roles are separated to keep responsibilities clear.
+All responses are formatted through a global interceptor.
 
 ---
 
-## 📌 Notes
+## -- Test Account --
 
-* Role-based authorization is implemented using guards
-* Admin role is required for certain operations
-* Prisma is used for database management
+Admin account:
+email: [admin.guest993@gmail.com](mailto:admin.guest993@gmail.com)
+password: userPassword
 
 ---
 
-## 👤 Author
+## -- Author --
 
 Danijel Gajic
