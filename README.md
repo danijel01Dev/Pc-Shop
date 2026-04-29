@@ -74,8 +74,8 @@ All responses are formatted through a global interceptor.
 ## -- Test Account --
 
 Admin account:
-email: [admin.guest993@gmail.com](mailto:admin.guest993@gmail.com)
-password: userPassword
+email: adminTest@gmail.com
+password: admin1234
 
 ---
 
