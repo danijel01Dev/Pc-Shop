@@ -11,3 +11,7 @@ export class AuthResponseDto {
   })
   refreshToken: string;
 }
+export class RefreshDto {
+  @ApiProperty({ example: 'your refresh_token_here' })
+  refreshToken: string;
+}

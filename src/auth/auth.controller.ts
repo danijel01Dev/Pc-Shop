@@ -2,8 +2,8 @@ import { Controller, Post, Body, Req, UseGuards, Delete } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { JwtRefreshGuard } from './jwt/JWT-Guards/jwt.guard.refreshToken';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { AuthResponseDto } from './AuthDTO/auth-response.dto';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { AuthResponseDto, RefreshDto } from './AuthDTO/auth-response.dto';
 import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './AuthDTO/login.dto';
@@ -37,6 +37,16 @@ export class AuthController {
   }
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Refresh/verify Token' })
+  @ApiBody({
+  type: RefreshDto,
+  examples: {
+    example: {
+      value: {
+        refreshToken: 'your_refresh_token_here',
+      },
+    },
+  },
+})
   @ApiResponse({
     status: 200,
     description: 'Token has been refreshed ',
