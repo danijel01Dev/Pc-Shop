@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { JwtRefreshGuard } from './jwt/JWT-Guards/jwt.guard.refreshToken';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthResponseDto } from './AuthDTO/auth-response.dto';
-import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
+import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './AuthDTO/login.dto';
 
