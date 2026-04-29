@@ -19,7 +19,7 @@ import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
 import { UpdateRoleDto } from './dto/update-admin.dto';
 import { UserResponseDto, UserEmailDto, UserRoleDto } from './dto/api-user.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
+import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 
 @ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)

@@ -20,7 +20,7 @@ import { RolesGuard } from '../auth/jwt/JWT-Guards/role.guard';
 import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
  import { OrderResponseDto, PagResponseDto } from './dto/api-order.dto';
-import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
+import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 
 @Controller('orders')
 export class OrdersController {

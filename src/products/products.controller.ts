@@ -20,7 +20,7 @@ import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/api-product.dto';
 import { PaginatedProductsDto } from './dto/api-product.dto';
-import { ApiErrorResponses } from 'src/error-decorator/ErrorDecoratorSwagger';
+import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 
 @Controller('products')
 export class ProductsController {
