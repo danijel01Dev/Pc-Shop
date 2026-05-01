@@ -46,7 +46,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
   }
-  async updateRefreshToken(id: number, token: string) {
+  async updateRefreshToken(id: number, token: string | null) {
     try {
       return this.db.user.update({
         where: { id },

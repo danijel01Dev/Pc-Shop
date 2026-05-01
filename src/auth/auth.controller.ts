@@ -7,6 +7,7 @@ import { AuthResponseDto, RefreshDto } from './AuthDTO/auth-response.dto';
 import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './AuthDTO/login.dto';
+import { JwtAuthGuard } from './jwt/JWT-Guards/jwt.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -56,16 +57,16 @@ export class AuthController {
 
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  refresh(@Req() req, @Body() dto: RefreshDto) {
-    return this.auth.refresh(dto.refreshToken);
+  refresh(@Req() req) {
+    return this.auth.refresh(req.user.sub , req.user.refreshToken);
   }
   @ApiBearerAuth('access-token')
   @ApiOperation({ summary: 'Remove token/access to user' })
   @ApiResponse({ status: 200, description: 'User successfully logged out' })
   @ApiErrorResponses()
-  @Delete('logout')
-  @UseGuards(JwtRefreshGuard)
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
   logout(@Req() req) {
-    return this.auth.logout(req.user);
+    return this.auth.logout(req.user.sub);
   }
 }

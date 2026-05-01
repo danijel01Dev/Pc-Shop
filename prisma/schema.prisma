@@ -19,7 +19,7 @@ model User {
   id Int  @id    @default(autoincrement())
   email String @unique
   password String
-  refreshToken  String @default("")
+  refreshToken  String? 
   role Role @default(USER)
   order  Order[]
 

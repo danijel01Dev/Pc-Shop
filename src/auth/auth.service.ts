@@ -92,68 +92,52 @@ export class AuthService {
   }
 
   // ==== Verify token from frontend and update with new one in data base =====
-  async refresh(refreshToken: string) {
-  try {
-    const decoded = jwt.verify(
-      refreshToken,
-      process.env.JWT_REFRESH_SECRET as string,
-    ) as jwt.JwtPayload
-    const userId = Number(decoded.sub)
+  async refresh(userId: number, refreshToken: string) {
+  const user = await this.db.findOne(userId);
 
-    const user = await this.db.findOne(userId);
-
-    if (!user || !user.refreshToken) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
-
-    const passCheck = await bcrypt.compare(
-      refreshToken,
-      user.refreshToken,
-    );
-
-    if (!passCheck) {
-      throw new UnauthorizedException('Invalid refresh token');
-    }
-
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: user.role,
-    };
-
-    const accessToken = jwt.sign(
-      payload,
-      process.env.JWT_SECRET as string,
-      { expiresIn: '15m' },
-    );
-
-    const newRefreshToken = jwt.sign(
-      payload,
-      process.env.JWT_REFRESH_SECRET as string,
-      { expiresIn: '7d' },
-    );
-
-    const hashToken = await bcrypt.hash(newRefreshToken, 10);
-    await this.db.updateRefreshToken(user.id, hashToken);
-
-    return {
-      accessToken,
-      refreshToken: newRefreshToken,
-    };
-  } catch (error) {
-    console.log('Refresh token error:', error);
-    throw new UnauthorizedException('Invalid or expired refresh token');
+  if (!user || !user.refreshToken) {
+    throw new UnauthorizedException('Invalid credentials');
   }
+
+  const passCheck = await bcrypt.compare(refreshToken, user.refreshToken);
+
+  if (!passCheck) {
+    throw new UnauthorizedException('Invalid refresh token');
+  }
+
+  const payload = {
+    sub: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET as string, {
+    expiresIn: '15m',
+  });
+
+  const newRefreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
+    expiresIn: '7d',
+  });
+
+  await this.db.updateRefreshToken(
+    user.id,
+    await bcrypt.hash(newRefreshToken, 10),
+  );
+
+  return {
+    accessToken : accessToken,
+    refreshToken: newRefreshToken,
+  };
 }
   //==== Remove token and  Log out User ====
-  async logout(data: { sub: number; email: string; role: string }) {
-    const user = await this.db.findOne(data.sub);
+  async logout(sub : number) {
+    const user = await this.db.findOne(sub);
 
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
 
-    await this.db.updateRefreshToken(user.id, '' as string);
+    await this.db.updateRefreshToken(user.id,null);
 
     return {
       message: 'Logout successful',
