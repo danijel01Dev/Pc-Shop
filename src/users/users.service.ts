@@ -109,7 +109,7 @@ export class UsersService {
 
   async remove(id: number) {
     try {
-      return await this.db.user.delete({ where: { id } });
+       return await this.db.user.delete({ where: { id } });
     } catch (error) {
       console.log('failed to delete user', error);
       throw new NotFoundException('failed to delete user ');

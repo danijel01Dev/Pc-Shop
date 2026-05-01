@@ -33,8 +33,8 @@ describe('ProductsService', () => {
       page: 2,
       limit: 10,
       search: 'Mouse',
-      sortBy: 'price',
-      order: 'asc',
+      sortBy: 'price' as const,
+      order: 'asc' as 'asc',
     };
     prisma.product.findMany.mockResolvedValue([
       { id: 1, name: 'Mouse', price: 10 },

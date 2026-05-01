@@ -82,12 +82,18 @@ export class ProductsService {
     }
   }
 
-  async remove(id: number) {
-    try {
-      await this.db.product.delete({ where: { id } });
-    } catch (error) {
-      console.log('failed to delete product', error);
-      throw new NotFoundException('failed to delete product');
-    }
+async remove(id: number) {
+  const product = await this.db.product.findUnique({
+    where: { id },
+  });
+
+  if (!product) {
+    throw new NotFoundException(`Product with ID ${id} not found`);
   }
+
+  await this.db.product.delete({ where: { id } });
+
+  return { message: 'Product deleted successfully' };
+}
+
 }
