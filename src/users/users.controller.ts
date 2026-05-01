@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
   ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -18,6 +19,7 @@ import { RolesGuard } from '../auth/jwt/JWT-Guards/role.guard';
 import { Roles } from '../auth/jwt/JWT-Decorator/role.decorator';
 import { UpdateRoleDto } from './dto/update-admin.dto';
 import { UserResponseDto, UserEmailDto, UserRoleDto } from './dto/api-user.dto';
+import { PaginationDto } from '../products/dto/pagination.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 
@@ -49,8 +51,8 @@ export class UsersController {
     type: UserEmailDto,
   })
   @ApiErrorResponses()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(@Query() pagDto: PaginationDto) {
+    return this.usersService.findAll(pagDto);
   }
   @UseGuards(RolesGuard)
   @Roles('ADMIN')

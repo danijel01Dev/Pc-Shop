@@ -10,6 +10,7 @@ describe('UsersService', () => {
       findMany: jest.fn(),
       findUnique: jest.fn(),
       create: jest.fn(),
+      count: jest.fn(),
     },
   };
 
@@ -40,5 +41,31 @@ describe('UsersService', () => {
         }),
       }),
     );
+  });
+
+  it('should return paginated users', async () => {
+    const dto = { page: 2, limit: 5 };
+    const users = [{ email: 'user@mail.com' }];
+
+    prisma.user.count.mockResolvedValue(6);
+    prisma.user.findMany.mockResolvedValue(users);
+
+    await expect(service.findAll(dto)).resolves.toEqual({
+      data: users,
+      meta: {
+        total: 6,
+        page: 2,
+        limit: 5,
+        totalPages: 2,
+      },
+    });
+    expect(prisma.user.findMany).toHaveBeenCalledWith({
+      select: {
+        email: true,
+      },
+      orderBy: { id: 'asc' },
+      skip: 5,
+      take: 5,
+    });
   });
 });

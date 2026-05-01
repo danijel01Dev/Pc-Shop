@@ -9,6 +9,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateRoleDto } from './dto/update-admin.dto';
+import { PaginationDto } from '../products/dto/pagination.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -57,13 +58,31 @@ export class UsersService {
       throw new NotFoundException('Token not found');
     }
   }
-  findAll() {
+  async findAll(pagDto: PaginationDto) {
     try {
-      return this.db.user.findMany({
+      const page = pagDto.page || 1;
+      const limit = pagDto.limit || 10;
+      const skip = Math.max((page - 1) * limit, 0);
+
+      const total = await this.db.user.count();
+      const users = await this.db.user.findMany({
         select: {
           email: true,
         },
+        orderBy: { id: 'asc' },
+        skip,
+        take: limit,
       });
+
+      return {
+        data: users,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit) || 1,
+        },
+      };
     } catch (error) {
       console.log('failed to load users', error);
       throw new NotFoundException(' Loading Users failed');
