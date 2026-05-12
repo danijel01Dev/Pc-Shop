@@ -1,16 +1,31 @@
 # PC Shop API
 
 Backend API for a simple e-commerce system built with NestJS.
-The goal of this project was to practice core backend concepts used in real-world applications, including authentication, authorization, and database interaction.
+The goal of this project was to simulate backend patterns commonly used in production applications, including authentication, authorization, file uploads, and database transactions.
 
 Swagger documentation:
 https://pc-shop-fmqa.onrender.com/api
 
 ---
 
+## -- Features --
+
+- JWT Authentication
+- Refresh Token Rotation
+- Role-Based Authorization
+- Product CRUD
+- Order Management
+- AWS S3 Image Upload
+- Swagger Documentation
+- Prisma Transactions
+- Global Exception Filter
+- Global Response Interceptor
+
+---
+
 ## -- Overview --
 
-This project simulates a basic PC shop backend. It includes user authentication, product management, and order handling. The focus was on writing clean, structured code and handling common backend problems like secure authentication and concurrent requests.
+This project simulates a basic PC shop backend. It includes user authentication, product management, image uploads, and order handling. The focus was on writing clean, structured code and solving common backend problems such as secure authentication, validation, and concurrent requests.
 
 ---
 
@@ -26,6 +41,8 @@ Authorization is role-based, with USER and ADMIN roles. Guards are used to prote
 
 Products support standard CRUD operations with request validation through DTOs.
 
+Product images are uploaded using Multer and stored in AWS S3. Uploaded files are validated by type and size before being stored.
+
 Order creation is handled using Prisma transactions to avoid inconsistent state. Before creating an order, the system checks product availability. This helps prevent issues when multiple users try to buy the same product at the same time.
 
 ---
@@ -40,45 +57,23 @@ The goal was to keep the codebase readable and easy to extend.
 
 ## -- Tech Stack --
 
-NestJS is used as the main framework, with Prisma as the ORM and PostgreSQL as the database. Authentication is handled with JWT, testing with Jest, and the app is deployed on Railway. Swagger is used for API documentation.
+NestJS is used as the main framework, with Prisma as the ORM and PostgreSQL as the database.
+
+Additional technologies used:
+- JWT Authentication
+- AWS S3
+- Multer
+- Swagger
+- Jest
+
+The application is deployed on Render.
 
 ---
 
 ## -- Running the project --
 
-```bash id="run22"
+```bash
 git clone https://github.com/danijel01Dev/Pc-Shop.git
 cd Pc-Shop
 npm install
 npm run start:dev
-```
-
----
-
-## -- Testing --
-
-```bash id="test22"
-npm run test
-```
-
----
-
-## -- Notes --
-
-The project includes basic protection against race conditions during order creation by using database transactions.
-Guards for authentication and roles are separated to keep responsibilities clear.
-All responses are formatted through a global interceptor.
-
----
-
-## -- Test Account --
-
-Admin account:
-email: adminTest@gmail.com
-password: admin1234
-
----
-
-## -- Author --
-
-Danijel Gajic
