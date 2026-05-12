@@ -9,6 +9,11 @@ import {
   Query,
   UseGuards,
   ParseIntPipe,
+  UseInterceptors,
+  UploadedFile,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -21,6 +26,8 @@ import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ProductResponseDto } from './dto/api-product.dto';
 import { PaginatedProductsDto } from './dto/api-product.dto';
 import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Max } from 'class-validator';
 
 @Controller('products')
 export class ProductsController {
@@ -29,6 +36,7 @@ export class ProductsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('ADMIN')
   @Post()
+  @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Create Prodcut' })
   @ApiResponse({
     status: 201,
@@ -36,8 +44,15 @@ export class ProductsController {
     type: ProductResponseDto,
   })
   @ApiErrorResponses()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productsService.create(createProductDto);
+   async create(@UploadedFile() file: Express.Multer.File,
+    @Body() createProductDto: CreateProductDto) {
+       new ParseFilePipe({validators : [
+        new MaxFileSizeValidator({ maxSize : 1024 * 1024 * 5}),
+        new FileTypeValidator({ fileType: /(jpg|jpeg|png|webp)$/})
+       ]})
+      const awsURL = await this.productsService.upload(file.originalname, file.buffer,file.mimetype);
+
+    return this.productsService.create(createProductDto, awsURL);
   }
 
   @Get()

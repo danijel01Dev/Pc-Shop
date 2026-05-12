@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProductsService } from './products.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { ConfigService } from '@nestjs/config';
+import { CreateProductDto } from './dto/create-product.dto';
 
 describe('ProductsService', () => {
   let service: ProductsService;
@@ -8,11 +10,18 @@ describe('ProductsService', () => {
   const MockPrisma = {
     product: { findMany: jest.fn(), count: jest.fn(), create: jest.fn() },
   };
+  const MockConfigService = {
+    get: jest.fn((key: string) => {
+      if (key === 'AWS_s3_REGION') return 'us-east-1';
+      return null;
+    }),
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ProductsService,
         { provide: PrismaService, useValue: MockPrisma },
+        { provide: ConfigService, useValue: MockConfigService },
       ],
     }).compile();
 
@@ -28,7 +37,7 @@ describe('ProductsService', () => {
     expect(call.data).toHaveLength(1);
   });
 
-  it('should return  filtered products', async () => {
+  it('should return filtered products', async () => {
     const dto = {
       page: 2,
       limit: 10,
@@ -54,13 +63,15 @@ describe('ProductsService', () => {
       price: 15,
       stock: 50,
     };
+    const imageurl = '';
     prisma.product.create.mockResolvedValue({
       id: 1,
       ...dto,
+      imageurl,
       createdAt: new Date(),
       deletedAt: null,
     });
-    const test = await service.create(dto);
+    const test = await service.create(dto, imageurl);
 
     expect(prisma.product.create).toHaveBeenCalledWith({
       data: {
@@ -68,6 +79,7 @@ describe('ProductsService', () => {
         description: dto.description,
         price: dto.price,
         stock: dto.stock,
+        imageurl,
       },
     });
     expect(test.name).toBe('Mouse');

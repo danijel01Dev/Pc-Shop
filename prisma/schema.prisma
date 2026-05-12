@@ -43,6 +43,7 @@ model Product {
  description String?
  price Float
  stock Int
+ imageurl String?
  items OrderItem []
  createdAt DateTime @default(now())
  deletedAt DateTime? 

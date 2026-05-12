@@ -3,22 +3,40 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationDto } from './dto/pagination.dto';
-
+import { ConfigService } from '@nestjs/config';
+import { Bucket$, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 // ==== Whole service is covered by Admin guard in controller  except findAll and  findOne===
 
 @Injectable()
 export class ProductsService {
-  constructor(private db: PrismaService) {}
-  async create(createProductDto: CreateProductDto) {
+  private readonly s3Client: S3Client;
+
+  constructor(
+    private db: PrismaService,
+    private readonly configService: ConfigService,
+  ) {
+    this.s3Client = new S3Client({ region: this.configService.get('AWS_s3_REGION') });
+  }
+  async create(createProductDto: CreateProductDto, imageurl : string) {
     return await this.db.product.create({
       data: {
         name: createProductDto.name,
         description: createProductDto.description,
         price: createProductDto.price,
         stock: createProductDto.stock,
+        imageurl : imageurl
       },
     });
   }
+ async upload(fileName : string, fileBuffer : Buffer, mimetype : string){
+     await this.s3Client.send(new PutObjectCommand({
+      Bucket: process.env.AWS_S3_BUCKET_NAME as string,
+      Key: fileName,
+      Body: fileBuffer,
+      ContentType : mimetype
+     }))
+     return `https://${process.env.AWS_S3_BUCKET_NAME}.s3.${process.env.AWS_S3_REGION}.amazonaws.com/${fileName}`
+ }
 
   async findAll(pagDto: PaginationDto) {
     const page = pagDto.page || 1;
