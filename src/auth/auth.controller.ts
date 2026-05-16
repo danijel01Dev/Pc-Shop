@@ -8,6 +8,7 @@ import { ApiErrorResponses } from '../error-decorator/ErrorDecoratorSwagger';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { LoginDto } from './AuthDTO/login.dto';
 import { JwtAuthGuard } from './jwt/JWT-Guards/jwt.guard';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
 export class AuthController {
@@ -20,6 +21,7 @@ export class AuthController {
     type: AuthResponseDto,
   })
   @ApiErrorResponses()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('register')
   register(@Body() dto: CreateUserDto) {
     return this.auth.register(dto);
@@ -32,6 +34,7 @@ export class AuthController {
     type: AuthResponseDto,
   })
   @ApiErrorResponses()
+  @Throttle({ default: { limit: 5, ttl: 60000} })
   @Post('login')
   login(@Body() dto: LoginDto) {
     return this.auth.login(dto.email, dto.password);
@@ -54,7 +57,7 @@ export class AuthController {
     type: AuthResponseDto,
   })
   @ApiErrorResponses()
-
+ @Throttle({ default: { limit: 10, ttl: 60000 } })
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
   refresh(@Req() req) {
